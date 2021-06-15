@@ -1,23 +1,25 @@
 <template>
   <div class="left-sidebar">
     <h2>Category</h2>
-    <div class="search_box pull-right">
-      <input type="text" v-model="search" class="w-100" placeholder="Search" />
-    </div>
+    <input
+      type="text"
+      v-model="search"
+      class="w-100 form-control form-control-sm"
+      placeholder="Search category.."
+    />
     <div class="panel-group category-products">
       <div
         v-for="category in filteredCategories"
         :key="category.id"
-        @click="
-          $emit('item-selected', category.id);
-          selectedCategory = category.id;
-        "
+        @click="setSelectedCategory(category.id)"
         class="panel panel-default"
       >
         <div class="panel-heading btn">
           <small
             :class="`${
-              selectedCategory === category.id ? 'text-info' : 'text-secondary'
+              selectedCategory === category.id
+                ? 'text-primary'
+                : 'text-secondary'
             }`"
           >
             {{ category.name.toUpperCase() }}
@@ -29,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { useCart } from "@/services/item.repository.service";
+import { useCart } from "@/services/repository.service";
 import { computed, defineComponent, ref } from "vue";
 
 interface Category {
@@ -39,7 +41,7 @@ interface Category {
 export default defineComponent({
   setup() {
     const search = ref("");
-    const { selectedCategory, categories } = useCart();
+    const { selectedCategory, setSelectedCategory, categories } = useCart();
 
     const filteredCategories = computed(() => {
       return categories.value.filter(
@@ -47,7 +49,13 @@ export default defineComponent({
           obj.name.toLowerCase().indexOf(search.value.toLowerCase()) > -1
       );
     });
-    return { search, selectedCategory, categories, filteredCategories };
+    return {
+      search,
+      selectedCategory,
+      setSelectedCategory,
+      categories,
+      filteredCategories,
+    };
   },
 });
 </script>

@@ -7,11 +7,11 @@
         <alert-bar v-if="hasError" :message="error" />
       </div>
       <!-- Right -->
-      <div class="col-md-7">
+      <div class="col-md-12 col-lg-6">
         <left />
       </div>
       <!-- Left -->
-      <div class="col-md-5">
+      <div class="col-md-12 col-lg-6">
         <right />
       </div>
     </div>
@@ -19,12 +19,12 @@
 </template>
 
 <script lang="ts">
-import { useCart } from "@/services/item.repository.service";
+import { useCart } from "@/services/cart.service";
 import { defineComponent, provide, reactive } from "vue";
-import HeaderNav from "./HeaderNav.vue";
+import HeaderNav from "../HeaderNav.vue";
 import Left from "./Left/Left.vue";
 import Right from "./Right/Right.vue";
-import AlertBar from "@/components/AlertBar.vue";
+import AlertBar from "@/Views/components/AlertBar.vue";
 
 interface CartItem {
   id: number;

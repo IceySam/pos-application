@@ -8,6 +8,7 @@
         <table class="table table-condensed">
           <thead>
             <tr class="cart_menu">
+              <td class=""><small>#</small></td>
               <td class="description"><small>Item</small></td>
               <td class="price"><small>Price</small></td>
               <td class="quantity"><small>Quantity</small></td>
@@ -23,11 +24,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in localItems" :key="item.name">
+            <tr v-for="(item, index) in localItems" :key="item.name">
               <td class="">
-                <h6>{{ item.name }}</h6>
+                <span class="text-muted">{{ `${index + 1}.` }}</span>
               </td>
               <td class="">
+                <span class="text-muted">{{ item.name }}</span>
+              </td>
+              <td class="app-color">
                 <span>{{ formatCurrency(item.price) }}</span>
               </td>
               <td class="">
@@ -41,7 +45,7 @@
                   </span>
 
                   <input
-                    class="rounded my-auto h-50 w-50"
+                    class="form-control-sm my-auto"
                     type="number"
                     min="0"
                     name="quantity"
@@ -54,7 +58,7 @@
                 </div>
               </td>
               <td class="">
-                <span class="">
+                <span class="app-color">
                   {{ formatCurrency(item.price * item.quantity) }}
                 </span>
               </td>
