@@ -55,7 +55,7 @@ export default defineComponent({
           popop();
         }
       }
-    }
+    };
     return { logout, closeAttendantShift };
   },
 });
