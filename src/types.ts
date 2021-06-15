@@ -4,7 +4,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  inStock?: number;
+  stock?: number;
   category?: number;
 }
 

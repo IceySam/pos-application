@@ -30,26 +30,37 @@
                   <td class="price"><small>Price</small></td>
                   <td class="quantity"><small>Quantity</small></td>
                   <td class="total"><small>Total</small></td>
+                  <td class="receipt"><small>Payment Method</small></td>
                   <td class="receipt"><small>Receipt Code</small></td>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in localItems" :key="item.name">
+                <tr v-for="(item, index) in sales" :key="index">
                   <td class="">
                     <span class="text-muted">{{ `${index + 1}.` }}</span>
                   </td>
                   <td class="">
-                    <span class="text-muted">{{ item.name }}</span>
+                    <span class="text-muted">{{ item.product.name }}</span>
                   </td>
                   <td class="app-color">
-                    <span>{{ formatCurrency(item.price) }}</span>
+                    <span>{{ formatCurrency(item.product.price) }}</span>
                   </td>
                   <td class="">
                     <span class="text-muted">{{ item.quantity }}</span>
                   </td>
                   <td class="">
                     <span class="app-color">
-                      {{ formatCurrency(item.price * item.quantity) }}
+                      {{ formatCurrency(item.total) }}
+                    </span>
+                  </td>
+                  <td class="">
+                    <span class="app-color">
+                      {{ item.payment_method.name }}
+                    </span>
+                  </td>
+                  <td class="">
+                    <span class="app-color">
+                      {{ item.receipt }}
                     </span>
                   </td>
                 </tr>
@@ -67,6 +78,7 @@ import { defineComponent, ref } from "vue";
 import { useCart } from "@/services/cart.service";
 import useCurrency from "@/services/currency.service";
 import HeaderNav from "./HeaderNav.vue";
+import useAuth from "@/services/auth.service";
 
 export default defineComponent({
   components: {
@@ -76,8 +88,13 @@ export default defineComponent({
     const search = ref("");
     const { formatCurrency } = useCurrency();
     const localItems = ref([]);
-    const { error, hasError } = useCart();
-    return { error, hasError, localItems, formatCurrency, search };
+    const { error, hasError, sales, setSales } = useCart();
+    const { user } = useAuth();
+
+    // get all sales
+    setSales(Number(user.salesId));
+
+    return { sales, error, hasError, localItems, formatCurrency, search };
   },
 });
 </script>

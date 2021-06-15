@@ -3,12 +3,14 @@
 import { ReceiptDetails } from "@/types";
 import axios from "@/api";
 import { computed, reactive } from "vue";
-import formatDate from "./utils.service";
+import { formatDate } from "./utils.service";
 import useCurrency from "@/services/currency.service";
 
 const state = reactive({
   categories: [],
   allProducts: [],
+  paymentMethods: [],
+  sales: [],
   selectedCategory: 1,
   error: "",
   hasError: false,
@@ -35,7 +37,9 @@ export const useCart = () => {
     state.selectedCategory = val;
   };
   const selectedCategory = computed(() => state.selectedCategory);
+  const paymentMethods = computed(() => state.paymentMethods);
   const categories = computed(() => state.categories);
+  const sales = computed(() => state.sales);
   const error = computed(() => state.error);
   const hasError = computed(() => state.hasError);
 
@@ -51,7 +55,7 @@ export const useCart = () => {
       const res = await axios.get("/categories", {
         headers: { "Content-Type": "application/json" },
       });
-      state.categories = res.data.data;
+      state.categories = res.data;
       unSetError();
       return res;
     } catch (error) {
@@ -67,11 +71,58 @@ export const useCart = () => {
       const res = await axios.get("/products", {
         headers: { "Content-Type": "application/json" },
       });
-      state.allProducts = res.data.data;
+      state.allProducts = res.data;
       unSetError();
       return res;
     } catch (error) {
-      // state.error = error.response.data;
+      setError("Oops!! Connection error");
+      return error;
+    }
+  };
+
+  //   get payment methods
+  const setPaymentMethods = async () => {
+    try {
+      const res = await axios.get("/payment-methods", {
+        headers: { "Content-Type": "application/json" },
+      });
+      state.paymentMethods = res.data;
+      unSetError();
+      return res;
+    } catch (error) {
+      setError("Oops!! Connection error");
+      return error;
+    }
+  };
+
+  //   get sales
+  const setSales = async (sale: number) => {
+    try {
+      const res = await axios.get(`/get-sales/${sale}`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      state.sales = res.data;
+      unSetError();
+      return res;
+    } catch (error) {
+      setError("Oops!! Connection error");
+      return error;
+    }
+  };
+
+  //   close Shift
+  const closeShift = async (sale: number) => {
+    try {
+      const res = await axios.get("/close-shift/:sale", {
+        params: {
+          sale,
+        },
+        headers: { "Content-Type": "application/json" },
+      });
+      state.paymentMethods = res.data;
+      unSetError();
+      return res;
+    } catch (error) {
       setError("Oops!! Connection error");
       return error;
     }
@@ -96,11 +147,16 @@ export const useCart = () => {
   return {
     setCategories,
     setProducts,
+    setPaymentMethods,
+    setSales,
     postItems,
     setSelectedCategory,
     selectedCategory,
+    paymentMethods,
+    closeShift,
     categories,
     products,
+    sales,
     error,
     hasError,
   };
@@ -175,13 +231,13 @@ export const usePrint = () => {
             <table>
               <tbody>
                 <tr>
-                  <td>#</td><td>Name</td><td>Price</td><td>Quantity</td><td>Total</td>
+                  <td>#</td><td>Name</td><td>Price</td><td>Qty</td><td>Total</td>
                 </tr>
                 ${trs}
                 <tr class="total">
                   <td></td>
                   <td></td>
-                  <td>Total Amount:</td>
+                  <td>Total:</td>
                   <td></td>
                   <td>${formatCurrency(total)}</td>
                 </tr>

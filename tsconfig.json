@@ -12,7 +12,8 @@
     "sourceMap": false,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "vue-sweetalert2"
     ],
     "paths": {
       "@/*": [
@@ -32,7 +33,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/router/index.js"  ],
+, "src/router/index.js", "src/plugins/sweetalert.plugin.ts"  ],
   "exclude": [
     "node_modules"
   ]

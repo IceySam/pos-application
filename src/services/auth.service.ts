@@ -11,7 +11,6 @@ export default function useAuth() {
     id: null,
     name: localStorage.getItem("name") || "",
     salesId: localStorage.getItem("salesId") || "",
-    token: localStorage.getItem("token") || "",
   });
 
   //   login
@@ -21,10 +20,9 @@ export default function useAuth() {
       const res = await axios.post("/login", items, {
         headers: { "Content-Type": "application/json" },
       });
-      const { token, name, salesId } = res.data.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("name", name);
-      localStorage.setItem("salesId", salesId);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("name", res.data.user.name);
+      localStorage.setItem("salesId", res.data.salesId);
       unSetError();
       return res;
     } catch (error) {

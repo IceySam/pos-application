@@ -11,7 +11,7 @@
         <img v-else :src="localItem.image" width="70" height="50" alt="" />
         <h6 class="app-color">{{ formatCurrency(item.price) }}</h6>
         <p class="app-color">{{ localItem.name }}</p>
-        <p class="mt-0">{{ `In stock: ${localItem.inStock}` }}</p>
+        <p class="mt-0">{{ `In stock: ${localItem.stock}` }}</p>
         <small>Qty: </small>
         <input
           v-model="localItem.quantity"

@@ -25,14 +25,8 @@ import HeaderNav from "../HeaderNav.vue";
 import Left from "./Left/Left.vue";
 import Right from "./Right/Right.vue";
 import AlertBar from "@/Views/components/AlertBar.vue";
+import { CartItem } from "@/types";
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  inStock: number;
-}
 export default defineComponent({
   name: "Home",
   components: { Left, HeaderNav, Right, AlertBar },

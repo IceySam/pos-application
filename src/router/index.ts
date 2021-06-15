@@ -7,22 +7,22 @@ const routes = [
     name: "Workspace",
     component: () => import("../Views/Pages/Workspace/Workspace.vue"),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // beforeEnter: (to: any, from: any, next: any) => {
-    //   const token = localStorage.getItem("token");
-    //   if (!token) next({ name: "Login" });
-    //   else next();
-    // },
+    beforeEnter: (to: any, from: any, next: any) => {
+      const token = localStorage.getItem("token");
+      if (!token) next({ name: "Login" });
+      else next();
+    },
   },
   {
     path: "/sales",
     name: "Sales",
     component: () => import("../Views/Pages/Sales.vue"),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // beforeEnter: (to: any, from: any, next: any) => {
-    //   const token = localStorage.getItem("token");
-    //   if (!token) next({ name: "Login" });
-    //   else next();
-    // },
+    beforeEnter: (to: any, from: any, next: any) => {
+      const token = localStorage.getItem("token");
+      if (!token) next({ name: "Login" });
+      else next();
+    },
   },
   {
     path: "/login",

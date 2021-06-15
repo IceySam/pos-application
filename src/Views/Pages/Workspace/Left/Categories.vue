@@ -7,6 +7,7 @@
       class="w-100 form-control form-control-sm"
       placeholder="Search category.."
     />
+    {{ categories }}
     <div class="panel-group category-products">
       <div
         v-for="category in filteredCategories"

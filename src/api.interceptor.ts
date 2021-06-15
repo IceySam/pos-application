@@ -1,11 +1,11 @@
 import useAuth from "./services/auth.service";
 import axios from "./api";
 
-const { user, logout } = useAuth();
+const { logout } = useAuth();
 
 axios.interceptors.request.use(
   (config) => {
-    const token = user.token;
+    const token = localStorage.getItem("token");
     // eslint-disable-next-line no-param-reassign
     config.headers.Authorization = `Bearer ${token}`;
     return config;

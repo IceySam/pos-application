@@ -3,7 +3,7 @@
     <!-- category select -->
     <div class="col-sm-6">
       <h2 class="title text-center">Category</h2>
-      <select v-model="category" :key="id" class="w-100 mb-4 form-control">
+      <select v-model="category" class="w-100 mb-4 form-control">
         <!-- <option value="null">--Select Category--</option> -->
         <option v-for="cat in categories" :value="cat.id" :key="cat.id">
           {{ cat.name }}

@@ -56,7 +56,7 @@ export default defineComponent({
       if (user.email !== "" && user.password !== "") {
         loading.value = true;
         const res = await login(user);
-        if (res.data && res.data.success) {
+        if (res.success) {
           error.value = false;
           router.push({ name: "Workspace" });
         } else {
