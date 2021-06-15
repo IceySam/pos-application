@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { useCart } from "@/services/repository.service";
+import { useCart } from "@/services/cart.service";
 import { computed, defineComponent, ref } from "vue";
 
 interface Category {
