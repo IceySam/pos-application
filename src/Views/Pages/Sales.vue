@@ -17,7 +17,7 @@
               type="text"
               v-model="search"
               class="w-100 mb-4 form-control"
-              placeholder="Search by Reciept Code"
+              placeholder="Search.."
             />
           </div>
           <!-- table -->
@@ -25,7 +25,11 @@
             <table class="table table-condensed">
               <thead>
                 <tr class="cart_menu">
-                  <td class=""><small>#</small></td>
+                  <td class="">
+                    <button @click="printItems" class="btn btn-success btn-sm">
+                      Print
+                    </button>
+                  </td>
                   <td class="description"><small>Item</small></td>
                   <td class="price"><small>Price</small></td>
                   <td class="quantity"><small>Quantity</small></td>
@@ -35,15 +39,15 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in sales" :key="index">
+                <tr v-for="(item, index) in filteredSales" :key="index">
                   <td class="">
                     <span class="text-muted">{{ `${index + 1}.` }}</span>
                   </td>
                   <td class="">
-                    <span class="text-muted">{{ item.product.name }}</span>
+                    <span class="text-muted">{{ item.name }}</span>
                   </td>
                   <td class="app-color">
-                    <span>{{ formatCurrency(item.product.price) }}</span>
+                    <span>{{ formatCurrency(item.price) }}</span>
                   </td>
                   <td class="">
                     <span class="text-muted">{{ item.quantity }}</span>
@@ -55,12 +59,12 @@
                   </td>
                   <td class="">
                     <span class="app-color">
-                      {{ item.payment_method.name }}
+                      {{ item.paymentMethod }}
                     </span>
                   </td>
                   <td class="">
                     <span class="app-color">
-                      {{ item.receipt }}
+                      {{ item.receiptCode }}
                     </span>
                   </td>
                 </tr>
@@ -74,15 +78,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useCart } from "@/services/cart.service";
+import { computed, defineComponent, ref } from "vue";
+import { useCart, usePrint } from "@/services/cart.service";
 import useCurrency from "@/services/currency.service";
 import HeaderNav from "./HeaderNav.vue";
 import useAuth from "@/services/auth.service";
+import AlertBar from "@/Views/components/AlertBar.vue";
+import { useCompanyInfo } from "@/services/utils.service";
 
 export default defineComponent({
   components: {
     HeaderNav,
+    AlertBar,
   },
   setup() {
     const search = ref("");
@@ -90,11 +97,51 @@ export default defineComponent({
     const localItems = ref([]);
     const { error, hasError, sales, setSales } = useCart();
     const { user } = useAuth();
+    const { print, formatForPrinting } = usePrint();
+    const { receiptDetails } = useCompanyInfo();
+
+    const filteredSales = computed(() => {
+      return sales.value.filter(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (obj: any) =>
+          obj.name.toLowerCase().indexOf(search.value.toLowerCase()) > -1 ||
+          obj.price.indexOf(search.value) > -1 ||
+          obj.paymentMethod.toLowerCase().indexOf(search.value.toLowerCase()) >
+            -1 ||
+          obj.receiptCode.toLowerCase().indexOf(search.value.toLowerCase()) > -1
+      );
+    });
+
+    const total = computed(() => {
+      return filteredSales.value.reduce(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (acc, obj: any) => obj.price * obj.quantity + acc,
+        0
+      );
+    });
+
+    // print items on table
+    const printItems = () => {
+      print(
+        formatForPrinting(filteredSales.value),
+        receiptDetails,
+        total.value || 0
+      );
+    };
 
     // get all sales
     setSales(Number(user.salesId));
 
-    return { sales, error, hasError, localItems, formatCurrency, search };
+    return {
+      sales,
+      filteredSales,
+      error,
+      hasError,
+      localItems,
+      formatCurrency,
+      search,
+      printItems,
+    };
   },
 });
 </script>

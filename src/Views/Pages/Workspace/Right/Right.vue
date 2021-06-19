@@ -24,45 +24,27 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, reactive, ref } from "vue";
+import { computed, defineComponent, inject, ref } from "vue";
 import Cart from "./Cart.vue";
 import useCurrency from "@/services/currency.service";
 import { useCart, usePrint } from "@/services/cart.service";
-import { CartItem, ReceiptDetails } from "@/types";
+import { CartItem } from "@/types";
 import useAuth from "@/services/auth.service";
-import { useSwal } from "@/services/utils.service";
+import { useCompanyInfo, useSwal } from "@/services/utils.service";
 
 export default defineComponent({
   components: { Cart },
   setup() {
     const payment_method = ref(1);
     const { formatCurrency } = useCurrency();
-    const { print } = usePrint();
+    const { print, formatForPrinting } = usePrint();
     const cartItems = inject<CartItem[]>("cartItems");
     const { user } = useAuth();
     const { postItems, setPaymentMethods, paymentMethods } = useCart();
     const { confirm } = useSwal();
+    const { receiptDetails } = useCompanyInfo();
 
-    const { name, salesId } = user;
-
-    const receiptDetails = reactive<ReceiptDetails>({
-      name,
-      company_name: "Happiness Eatery Service",
-      company_email: "xxxxxx",
-      company_address: "xxxxx",
-      company_phone: +2340000000000,
-    });
-
-    // formatted for printing
-    const formattedItems = computed(() =>
-      cartItems?.map((item, index) => ({
-        index: index + 1,
-        name: item.name,
-        price: formatCurrency(item.price),
-        quantity: item.quantity,
-        total: formatCurrency(item.price * item.quantity),
-      }))
-    );
+    const { salesId } = user;
 
     // formatted for sending to server
     const paymentItems = computed(() =>
@@ -81,6 +63,7 @@ export default defineComponent({
       return cartItems?.reduce((acc, obj) => obj.price * obj.quantity + acc, 0);
     });
 
+    // send items in cart to server for recording. call endpoint (make-sales)
     const sendToServer = async () => {
       const result = await confirm();
       if (result) {
@@ -95,8 +78,9 @@ export default defineComponent({
       }
     };
 
+    // print items on the table
     const printItems = () => {
-      print(formattedItems.value, receiptDetails, total.value || 0);
+      print(formatForPrinting(cartItems), receiptDetails, total.value || 0);
     };
 
     return {

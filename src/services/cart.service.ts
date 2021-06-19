@@ -101,7 +101,15 @@ export const useCart = () => {
       const res = await axios.get(`/get-sales/${sale}`, {
         headers: { "Content-Type": "application/json" },
       });
-      state.sales = res.data;
+      state.sales = res.data.map((obj: any) => ({
+        id: obj.id,
+        name: obj.product.name,
+        price: obj.product.price,
+        quantity: obj.quantity,
+        total: obj.total,
+        paymentMethod: obj.payment_method.name,
+        receiptCode: obj.receipt_code,
+      }));
       unSetError();
       return res;
     } catch (error) {
@@ -164,6 +172,18 @@ export const useCart = () => {
 
 export const usePrint = () => {
   const { formatCurrency } = useCurrency();
+
+  // formatted for printing
+  const formatForPrinting = (items: any) => {
+    return items.map((item: any, index: number) => ({
+      index: index + 1,
+      name: item.name,
+      price: formatCurrency(item.price),
+      quantity: item.quantity,
+      total: formatCurrency(item.price * item.quantity),
+    }));
+  };
+
   const print = (items: any, details: ReceiptDetails, total: number) => {
     let trs = "";
     items.forEach((item: any) => {
@@ -251,5 +271,5 @@ export const usePrint = () => {
     printWindow?.print();
     printWindow?.close();
   };
-  return { print };
+  return { print, formatForPrinting };
 };

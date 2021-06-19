@@ -6,7 +6,7 @@
           <router-link :to="{ name: 'Workspace' }">
             <span class="btn">
               <h4 class="app-color">
-                <font-awesome-icon icon="home" /> Happiness Eatery Station
+                <font-awesome-icon icon="home" /> {{ company_name }}
               </h4></span
             >
           </router-link>
@@ -38,7 +38,7 @@
 <script lang="ts">
 import useAuth from "@/services/auth.service";
 import { useCart } from "@/services/cart.service";
-import { useSwal } from "@/services/utils.service";
+import { useCompanyInfo, useSwal } from "@/services/utils.service";
 import { defineComponent } from "vue";
 export default defineComponent({
   components: {},
@@ -46,6 +46,7 @@ export default defineComponent({
     const { logout, user } = useAuth();
     const { closeShift } = useCart();
     const { confirm, popop } = useSwal();
+    const { company_name } = useCompanyInfo();
 
     const closeAttendantShift = async () => {
       const result = await confirm();
@@ -56,7 +57,7 @@ export default defineComponent({
         }
       }
     };
-    return { logout, closeAttendantShift };
+    return { logout, closeAttendantShift, company_name };
   },
 });
 </script>
