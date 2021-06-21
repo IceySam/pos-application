@@ -1,5 +1,7 @@
 <template>
   <section id="form">
+    <h6 class="text-center app-color">{{ companyDetails.company_name }}</h6>
+
     <!--form-->
     <div class="container">
       <div class="row">
@@ -41,11 +43,17 @@
 import router from "@/router";
 import useAuth from "@/services/auth.service";
 import { defineComponent, reactive, ref } from "vue";
+import { useCompanyInfo } from "@/services/utils.service";
+
 export default defineComponent({
   setup() {
+    const { setCompanyDetails, companyDetails } = useCompanyInfo();
     const { login } = useAuth();
     const loading = ref(false);
     const error = ref(false);
+
+    // get company details
+    setCompanyDetails();
 
     const user = reactive({
       email: "",
@@ -66,7 +74,7 @@ export default defineComponent({
         loading.value = false;
       }
     };
-    return { error, user, signIn, loading };
+    return { error, user, signIn, loading, companyDetails };
   },
 });
 </script>

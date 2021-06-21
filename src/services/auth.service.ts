@@ -26,18 +26,42 @@ export default function useAuth() {
       unSetError();
       return res;
     } catch (error) {
-      setError("Oops!! Connection error");
+      setError("Oops!! Unable to Login");
+      return error;
+    }
+  };
+
+  //   close Shift
+  const closeShift = async (sale: number) => {
+    try {
+      const res = await axios.get(`/close-shift/${sale}`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      unSetError();
+      return res;
+    } catch (error) {
+      setError("Oops!! Error performing operation");
       return error;
     }
   };
 
   //   logout
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    localStorage.removeItem("salesId");
-    router.push({ name: "Login" });
+  const logout = async () => {
+    try {
+      const res = await axios.post("/logout", {
+        headers: { "Content-Type": "application/json" },
+      });
+      unSetError();
+      localStorage.removeItem("token");
+      localStorage.removeItem("name");
+      localStorage.removeItem("salesId");
+      router.push({ name: "Login" });
+      return res;
+    } catch (error) {
+      setError("Oops!! Error performing operation");
+      return error;
+    }
   };
 
-  return { user, login, logout };
+  return { user, login, logout, closeShift };
 }

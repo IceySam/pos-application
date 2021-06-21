@@ -58,6 +58,16 @@ export default defineComponent({
     // get all products from server
     setProducts();
 
+    const polling = ref();
+    // refetch products
+    const setItems = () => {
+      polling.value = setInterval(() => {
+        setProducts();
+      }, 120000);
+    };
+
+    setItems();
+
     const addToCart = inject("addToCart");
     return {
       search,

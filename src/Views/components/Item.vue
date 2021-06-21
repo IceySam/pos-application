@@ -16,7 +16,8 @@
         <input
           v-model="localItem.quantity"
           class="form-control mb-2 text-center"
-          min="0"
+          min="1"
+          oninput="validity.valid||(value=1);"
           type="number"
         />
         <a

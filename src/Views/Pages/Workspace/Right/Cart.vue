@@ -38,7 +38,7 @@
                 <div class="d-flex">
                   <span
                     class="btn btn-sm btn-light"
-                    @click="item.quantity--"
+                    @click="item.quantity < 2 ? 1 : item.quantity--"
                     href=""
                   >
                     -
@@ -47,7 +47,8 @@
                   <input
                     class="form-control-sm my-auto"
                     type="number"
-                    min="0"
+                    min="1"
+                    oninput="validity.valid||(value=1);"
                     name="quantity"
                     v-model="item.quantity"
                     autocomplete="off"

@@ -40,11 +40,12 @@ export default defineComponent({
     const { print, formatForPrinting } = usePrint();
     const cartItems = inject<CartItem[]>("cartItems");
     const { user } = useAuth();
-    const { postItems, setPaymentMethods, paymentMethods } = useCart();
+    const { postItems, setPaymentMethods, paymentMethods, setProducts } =
+      useCart();
     const { confirm } = useSwal();
-    const { receiptDetails } = useCompanyInfo();
+    const { companyDetails, setCompanyDetails } = useCompanyInfo();
 
-    const { salesId } = user;
+    const { salesId, name } = user;
 
     // formatted for sending to server
     const paymentItems = computed(() =>
@@ -56,6 +57,8 @@ export default defineComponent({
       }))
     );
 
+    // get details
+    setCompanyDetails();
     // set payment methods
     setPaymentMethods();
 
@@ -73,14 +76,21 @@ export default defineComponent({
           payment_method: payment_method.value,
         });
         if (res.success) {
+          // print reciept
           printItems();
+          // refresh server
+          setProducts();
         }
       }
     };
 
     // print items on the table
     const printItems = () => {
-      print(formatForPrinting(cartItems), receiptDetails, total.value || 0);
+      print(
+        formatForPrinting(cartItems),
+        { name, ...companyDetails },
+        total.value || 0
+      );
     };
 
     return {

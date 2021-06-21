@@ -1,9 +1,7 @@
 import Swal from "sweetalert2";
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import axios from "@/api";
 import { useError } from "./cart.service";
-import { ReceiptDetails } from "@/types";
-import useAuth from "./auth.service";
 
 /**
  * Format and return date in Humanize format
@@ -38,7 +36,7 @@ export const useSwal = () => {
     });
     return res.value;
   };
-  const popop = async (status = "Processed!", msg = "Successful") => {
+  const popop = async (msg = "Successful", status = "Processed!") => {
     Swal.fire(`${status}`, `${msg}`, "success");
   };
   return { confirm, popop };
@@ -46,33 +44,25 @@ export const useSwal = () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useCompanyInfo = () => {
-  const company_name = ref("Happiness Eatery Station");
-  const company_email = ref("xxxxxx");
-  const company_address = ref("xxxxx");
-  const company_phone = ref(+2340000000000);
+  const companyDetails = reactive({
+    company_name: "",
+    company_email: "",
+    company_address: "",
+    company_phone: 0,
+  });
 
   const { setError, unSetError } = useError();
-  const { user } = useAuth();
-
-  const receiptDetails = reactive<ReceiptDetails>({
-    name: user.name,
-    company_name: company_name.value,
-    company_email: company_email.value,
-    company_address: company_address.value,
-    company_phone: company_phone.value,
-  });
 
   const setCompanyDetails = async () => {
     try {
       const res = await axios.get("/company-details", {
         headers: { "Content-Type": "application/json" },
       });
-      const { company_name, company_email, company_address, company_phone } =
-        res.data;
-      company_name.value = company_name;
-      company_email.value = company_email;
-      company_address.value = company_address;
-      company_phone.value = company_phone;
+      const { company_name, email, address, phone_number } = res.data;
+      companyDetails.company_name = company_name;
+      companyDetails.company_email = email;
+      companyDetails.company_address = address;
+      companyDetails.company_phone = phone_number;
       unSetError();
       return res;
     } catch (error) {
@@ -82,11 +72,7 @@ export const useCompanyInfo = () => {
   };
 
   return {
-    company_name,
-    company_email,
-    company_address,
-    company_phone,
+    companyDetails,
     setCompanyDetails,
-    receiptDetails,
   };
 };

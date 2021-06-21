@@ -6,7 +6,9 @@
           <router-link :to="{ name: 'Workspace' }">
             <span class="btn">
               <h4 class="app-color">
-                <font-awesome-icon icon="home" /> {{ company_name }}
+                <font-awesome-icon icon="home" />{{
+                  companyDetails.company_name
+                }}
               </h4></span
             >
           </router-link>
@@ -37,27 +39,29 @@
 
 <script lang="ts">
 import useAuth from "@/services/auth.service";
-import { useCart } from "@/services/cart.service";
 import { useCompanyInfo, useSwal } from "@/services/utils.service";
 import { defineComponent } from "vue";
 export default defineComponent({
   components: {},
   setup() {
-    const { logout, user } = useAuth();
-    const { closeShift } = useCart();
+    const { logout, user, closeShift } = useAuth();
     const { confirm, popop } = useSwal();
-    const { company_name } = useCompanyInfo();
+    const { companyDetails, setCompanyDetails } = useCompanyInfo();
+
+    // get company details
+    setCompanyDetails();
 
     const closeAttendantShift = async () => {
       const result = await confirm();
       if (result) {
         const res = await closeShift(Number(user.salesId));
         if (res.success) {
-          popop();
+          popop("Shift Closed Successfully");
+          logout();
         }
       }
     };
-    return { logout, closeAttendantShift, company_name };
+    return { logout, closeAttendantShift, companyDetails };
   },
 });
 </script>

@@ -35,7 +35,7 @@
                   <td class="quantity"><small>Quantity</small></td>
                   <td class="total"><small>Total</small></td>
                   <td class="receipt"><small>Payment Method</small></td>
-                  <td class="receipt"><small>Receipt Code</small></td>
+                  <td class="receipt"><small>Transaction Ref</small></td>
                 </tr>
               </thead>
               <tbody>
@@ -64,7 +64,7 @@
                   </td>
                   <td class="">
                     <span class="app-color">
-                      {{ item.receiptCode }}
+                      {{ item.reference }}
                     </span>
                   </td>
                 </tr>
@@ -98,7 +98,9 @@ export default defineComponent({
     const { error, hasError, sales, setSales } = useCart();
     const { user } = useAuth();
     const { print, formatForPrinting } = usePrint();
-    const { receiptDetails } = useCompanyInfo();
+    const { companyDetails, setCompanyDetails } = useCompanyInfo();
+
+    setCompanyDetails();
 
     const filteredSales = computed(() => {
       return sales.value.filter(
@@ -108,7 +110,7 @@ export default defineComponent({
           obj.price.indexOf(search.value) > -1 ||
           obj.paymentMethod.toLowerCase().indexOf(search.value.toLowerCase()) >
             -1 ||
-          obj.receiptCode.toLowerCase().indexOf(search.value.toLowerCase()) > -1
+          obj.reference.toLowerCase().indexOf(search.value.toLowerCase()) > -1
       );
     });
 
@@ -124,7 +126,7 @@ export default defineComponent({
     const printItems = () => {
       print(
         formatForPrinting(filteredSales.value),
-        receiptDetails,
+        { name: user.name, ...companyDetails },
         total.value || 0
       );
     };

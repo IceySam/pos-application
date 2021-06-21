@@ -108,30 +108,12 @@ export const useCart = () => {
         quantity: obj.quantity,
         total: obj.total,
         paymentMethod: obj.payment_method.name,
-        receiptCode: obj.receipt_code,
+        reference: obj.reference,
       }));
       unSetError();
       return res;
     } catch (error) {
-      setError("Oops!! Connection error");
-      return error;
-    }
-  };
-
-  //   close Shift
-  const closeShift = async (sale: number) => {
-    try {
-      const res = await axios.get("/close-shift/:sale", {
-        params: {
-          sale,
-        },
-        headers: { "Content-Type": "application/json" },
-      });
-      state.paymentMethods = res.data;
-      unSetError();
-      return res;
-    } catch (error) {
-      setError("Oops!! Connection error");
+      setError("Oops!! Unable to get sales");
       return error;
     }
   };
@@ -147,7 +129,7 @@ export const useCart = () => {
       return res;
     } catch (error) {
       // state.error = error.response.data;
-      setError("Oops!! Connection error");
+      setError("Oops!! Could not process items this time");
       return error;
     }
   };
@@ -161,7 +143,6 @@ export const useCart = () => {
     setSelectedCategory,
     selectedCategory,
     paymentMethods,
-    closeShift,
     categories,
     products,
     sales,

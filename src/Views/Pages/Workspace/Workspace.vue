@@ -26,28 +26,24 @@ import Left from "./Left/Left.vue";
 import Right from "./Right/Right.vue";
 import AlertBar from "@/Views/components/AlertBar.vue";
 import { CartItem } from "@/types";
-// import { useCompanyInfo } from "@/services/utils.service";
 
 export default defineComponent({
   name: "Home",
   components: { Left, HeaderNav, Right, AlertBar },
   setup() {
     const { setCategories, error, hasError } = useCart();
-    // const { setCompanyDetails } = useCompanyInfo()
+
     // get categories from serve and save in state
     setCategories();
 
-    /**
-     * set company information NB. edit useCompanyInfo in utils.service.ts to use this function
-     * setCompanyDetails() gets company details from server
-     * details such as company_name, company_address, company_email, company_phone can be gotten
-     * from const { company_name, company_address, company_email, company_phone, setCompanyDetails } = useCompanyInfo()
-     * */
-    // setCompanyDetails();
-
     const cartItems = reactive<CartItem[]>([]);
-    const addToCart = (item: CartItem) => {
-      if (!cartItems.some((obj) => obj.id === item.id)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addToCart = (item: any) => {
+      if (
+        !cartItems.some((obj) => obj.id === item.id) &&
+        item.quantity <= item.stock &&
+        item.quantity > 0
+      ) {
         cartItems.push(item);
       }
     };
